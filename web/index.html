@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base href="$FLUTTER_BASE_HREF">
+    <meta charset="UTF-8">
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+    <meta name="description" content="MediPrescribe - Digital Prescription Management">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="MediPrescribe">
+    <link rel="apple-touch-icon" href="icons/Icon-192.png">
+    <link rel="icon" type="image/png" href="favicon.png"/>
+    <title>MediPrescribe</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" type="text/css" href="splash/style.css">
+    <meta name="theme-color" content="#2563b8">
+    <script>
+        window.addEventListener('flutter-inserted', function(e) {
+            console.log('Flutter is ready.');
+        });
+    </script>
+    <script src="flutter_bootstrap.js" async></script>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Poppins, -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen",
+                "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica",
+                "Arial", sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <picture id="splash">
+        <source srcset="splash/img/light-1x.png 1x, splash/img/light-2x.png 2x, splash/img/light-3x.png 3x" media="(prefers-color-scheme: light) or (prefers-color-scheme: no-preference)">
+        <source srcset="splash/img/dark-1x.png 1x, splash/img/dark-2x.png 2x, splash/img/dark-3x.png 3x" media="(prefers-color-scheme: dark)">
+        <img class="dart" src="splash/img/light-1x.png" />
+    </picture>
+    <script>
+        window.addEventListener('hashchange', () => {
+            if (window.location.hash.length > 0) {
+                const path = window.location.hash.substring(1);
+                window.history.replaceState(null, '', window.location.pathname + '?' + path);
+            }
+        });
+        var serviceWorkerVersion = null;
+        var scriptLoaded = false;
+        function loadScript(src, onload) {
+            var script = document.createElement('script');
+            script.src = src;
+            script.onload = onload;
+            document.head.appendChild(script);
+        }
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                loadScript('flutter_service_worker.js?v=' + serviceWorkerVersion, function () {});
+            });
+        }
+    </script>
+</body>
+</html>
