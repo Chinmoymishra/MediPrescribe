@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:printing/printing.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_text_styles.dart';
@@ -11,6 +12,7 @@ import '../../models/doctor.dart';
 import '../../providers/prescription_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/patient_provider.dart';
+import '../../utils/prescription_pdf_generator.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_custom_app_bar.dart';
 import '../../widgets/app_card.dart';
@@ -29,6 +31,41 @@ class PrescriptionPreviewScreen extends ConsumerStatefulWidget {
 }
 
 class _PrescriptionPreviewScreenState extends ConsumerState<PrescriptionPreviewScreen> {
+  bool _isPrinting = false;
+
+  Future<void> _handlePrint(Prescription prescription) async {
+    if (_isPrinting) return;
+    setState(() => _isPrinting = true);
+
+    try {
+      final doctor = ref.read(authProvider).value;
+      final patient = await ref.read(getPatientByIdProvider(prescription.patientId).future);
+
+      if (doctor is! Doctor || patient == null) {
+        throw Exception('Missing doctor or patient information');
+      }
+
+      final pdfDoc = await PrescriptionPdfGenerator.generate(
+        prescription: prescription,
+        doctor: doctor,
+        patient: patient,
+      );
+
+      await Printing.layoutPdf(
+        onLayout: (format) => pdfDoc.save(),
+        name: 'Prescription_${prescription.id}',
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not open print dialog: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isPrinting = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final prescriptionAsync = ref.watch(getPrescriptionByIdProvider(widget.prescriptionId));
@@ -163,7 +200,15 @@ class _PrescriptionPreviewScreenState extends ConsumerState<PrescriptionPreviewS
                 const SizedBox(height: AppSpacing.lg),
 
                 // Action Buttons
-                if (prescription.status == PrescriptionStatus.draft)
+                AppButton(
+                  text: 'Print',
+                  width: double.infinity,
+                  isLoading: _isPrinting,
+                  icon: const Icon(Icons.print, color: Colors.white, size: 18),
+                  onPressed: () => _handlePrint(prescription),
+                ),
+                if (prescription.status == PrescriptionStatus.draft) ...[
+                  const SizedBox(height: AppSpacing.md),
                   AppButton(
                     text: 'Send Prescription',
                     width: double.infinity,
@@ -179,8 +224,9 @@ class _PrescriptionPreviewScreenState extends ConsumerState<PrescriptionPreviewS
                         context.go('/doctor/prescriptions');
                       });
                     },
-                  )
-                else
+                  ),
+                ] else ...[
+                  const SizedBox(height: AppSpacing.md),
                   AppCard(
                     child: Center(
                       child: Text(
@@ -189,6 +235,7 @@ class _PrescriptionPreviewScreenState extends ConsumerState<PrescriptionPreviewS
                       ),
                     ),
                   ),
+                ],
               ],
             ),
           );
