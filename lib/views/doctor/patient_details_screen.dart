@@ -5,12 +5,15 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/theme/app_spacing.dart';
+import 'package:intl/intl.dart';
 import '../../providers/patient_provider.dart';
 import '../../providers/prescription_form_provider.dart';
+import '../../providers/prescription_provider.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_avatar.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/app_custom_app_bar.dart';
+import '../../widgets/prescription_card.dart';
 
 class PatientDetailsScreen extends ConsumerWidget {
   final String patientId;
@@ -91,8 +94,47 @@ class PatientDetailsScreen extends ConsumerWidget {
                     text: 'Create Prescription',
                     width: double.infinity,
                     onPressed: () {
+                      ref.read(prescriptionFormProvider.notifier).reset();
+                      ref.read(prescriptionFormProvider.notifier).setPatientType(PatientType.existing);
                       ref.read(prescriptionFormProvider.notifier).setPatientId(patientId);
                       context.push('/prescription/create');
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  Text('Prescription History', style: AppTextStyles.headlineSmall),
+                  const SizedBox(height: AppSpacing.md),
+                  Consumer(
+                    builder: (context, ref, _) {
+                      final historyAsync = ref.watch(prescriptionsByPatientIdProvider(patientId));
+                      return historyAsync.when(
+                        data: (prescriptions) {
+                          if (prescriptions.isEmpty) {
+                            return AppCard(
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(AppSpacing.md),
+                                  child: Text(
+                                    'No previous prescriptions found for this patient.',
+                                    style: AppTextStyles.bodyMedium,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                          final sorted = [...prescriptions]..sort((a, b) => b.date.compareTo(a.date));
+                          return Column(
+                            children: sorted.map((prescription) {
+                              return PrescriptionCard(
+                                prescription: prescription,
+                                subtitle: DateFormat('dd MMM yyyy').format(prescription.date),
+                                onTap: () => context.push('/prescription/${prescription.id}/preview'),
+                              );
+                            }).toList(),
+                          );
+                        },
+                        loading: () => const AppLoadingIndicator(size: 24),
+                        error: (err, stack) => Text('Error: $err'),
+                      );
                     },
                   ),
                 ],

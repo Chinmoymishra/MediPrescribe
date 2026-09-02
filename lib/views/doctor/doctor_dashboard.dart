@@ -10,6 +10,7 @@ import '../../models/user.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/patient_provider.dart';
 import '../../providers/prescription_provider.dart';
+import '../../providers/prescription_form_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../widgets/app_card.dart';
 import '../../widgets/app_avatar.dart';
@@ -177,10 +178,15 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
       children: [
         Text('Quick Actions', style: AppTextStyles.headlineSmall),
         const SizedBox(height: AppSpacing.md),
-        AppButton(
-          text: 'Create Prescription',
-          width: double.infinity,
-          onPressed: () => context.push('/doctor/patients'),
+        Consumer(
+          builder: (context, ref, _) => AppButton(
+            text: 'Create Prescription',
+            width: double.infinity,
+            onPressed: () {
+              ref.read(prescriptionFormProvider.notifier).reset();
+              context.push('/prescription/create');
+            },
+          ),
         ),
         const SizedBox(height: AppSpacing.md),
         AppButton(
