@@ -35,7 +35,8 @@ class AppCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ? leading ??
               IconButton(
                 icon: const Icon(
-                  Icons.arrow_back_ios,
+                  Icons.arrow_back_ios_new_rounded,
+                  size: 20,
                   color: AppColors.primaryText,
                 ),
                 onPressed: onBackPressed ??

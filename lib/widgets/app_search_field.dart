@@ -32,7 +32,7 @@ class AppSearchField extends StatelessWidget {
           color: AppColors.secondaryText,
         ),
         prefixIcon: const Icon(
-          Icons.search,
+          Icons.search_rounded,
           color: AppColors.secondaryText,
         ),
         suffixIcon: controller?.text.isNotEmpty ?? false
@@ -43,7 +43,7 @@ class AppSearchField extends StatelessWidget {
                   onChanged?.call('');
                 },
                 child: const Icon(
-                  Icons.close,
+                  Icons.close_rounded,
                   color: AppColors.secondaryText,
                 ),
               )

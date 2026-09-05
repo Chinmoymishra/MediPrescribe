@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../core/theme/app_colors.dart';
 import '../core/theme/app_text_styles.dart';
 import '../core/theme/app_spacing.dart';
+import '../core/theme/app_radius.dart';
 
 class AppEmptyState extends StatelessWidget {
   final IconData icon;
@@ -24,10 +26,18 @@ class AppEmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 64,
-              color: Colors.grey[400],
+            Container(
+              width: 96,
+              height: 96,
+              decoration: BoxDecoration(
+                color: AppColors.lightBlue,
+                borderRadius: BorderRadius.circular(AppRadius.xxxl),
+              ),
+              child: Icon(
+                icon,
+                size: 40,
+                color: AppColors.primaryBlue,
+              ),
             ),
             const SizedBox(height: AppSpacing.lg),
             Text(

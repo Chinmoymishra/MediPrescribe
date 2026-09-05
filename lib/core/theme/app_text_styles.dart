@@ -1,26 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
 class AppTextStyles {
+  static TextStyle _base({
+    required double fontSize,
+    required FontWeight fontWeight,
+    required Color color,
+    required double height,
+  }) {
+    return GoogleFonts.plusJakartaSans(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      color: color,
+      height: height,
+    );
+  }
+
   // Display styles (Large headings)
-  static const TextStyle displayLarge = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle displayLarge = _base(
     fontSize: 32,
     fontWeight: FontWeight.w700,
     color: AppColors.primaryText,
     height: 1.2,
   );
 
-  static const TextStyle displayMedium = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle displayMedium = _base(
     fontSize: 28,
     fontWeight: FontWeight.w700,
     color: AppColors.primaryText,
     height: 1.2,
   );
 
-  static const TextStyle displaySmall = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle displaySmall = _base(
     fontSize: 24,
     fontWeight: FontWeight.w700,
     color: AppColors.primaryText,
@@ -28,24 +40,21 @@ class AppTextStyles {
   );
 
   // Headline styles
-  static const TextStyle headlineLarge = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle headlineLarge = _base(
     fontSize: 22,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w700,
     color: AppColors.primaryText,
     height: 1.3,
   );
 
-  static const TextStyle headlineMedium = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle headlineMedium = _base(
     fontSize: 20,
     fontWeight: FontWeight.w600,
     color: AppColors.primaryText,
     height: 1.3,
   );
 
-  static const TextStyle headlineSmall = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle headlineSmall = _base(
     fontSize: 18,
     fontWeight: FontWeight.w600,
     color: AppColors.primaryText,
@@ -53,24 +62,21 @@ class AppTextStyles {
   );
 
   // Title styles
-  static const TextStyle titleLarge = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle titleLarge = _base(
     fontSize: 16,
     fontWeight: FontWeight.w600,
     color: AppColors.primaryText,
     height: 1.4,
   );
 
-  static const TextStyle titleMedium = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle titleMedium = _base(
     fontSize: 14,
     fontWeight: FontWeight.w600,
     color: AppColors.primaryText,
     height: 1.4,
   );
 
-  static const TextStyle titleSmall = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle titleSmall = _base(
     fontSize: 12,
     fontWeight: FontWeight.w600,
     color: AppColors.primaryText,
@@ -78,24 +84,21 @@ class AppTextStyles {
   );
 
   // Body styles
-  static const TextStyle bodyLarge = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle bodyLarge = _base(
     fontSize: 16,
     fontWeight: FontWeight.w400,
     color: AppColors.primaryText,
     height: 1.5,
   );
 
-  static const TextStyle bodyMedium = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle bodyMedium = _base(
     fontSize: 14,
     fontWeight: FontWeight.w400,
     color: AppColors.primaryText,
     height: 1.5,
   );
 
-  static const TextStyle bodySmall = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle bodySmall = _base(
     fontSize: 12,
     fontWeight: FontWeight.w400,
     color: AppColors.secondaryText,
@@ -103,24 +106,21 @@ class AppTextStyles {
   );
 
   // Label styles
-  static const TextStyle labelLarge = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle labelLarge = _base(
     fontSize: 14,
     fontWeight: FontWeight.w600,
     color: AppColors.primaryText,
     height: 1.4,
   );
 
-  static const TextStyle labelMedium = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle labelMedium = _base(
     fontSize: 12,
     fontWeight: FontWeight.w600,
     color: AppColors.secondaryText,
     height: 1.3,
   );
 
-  static const TextStyle labelSmall = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle labelSmall = _base(
     fontSize: 10,
     fontWeight: FontWeight.w600,
     color: AppColors.secondaryText,
@@ -128,19 +128,25 @@ class AppTextStyles {
   );
 
   // Caption styles
-  static const TextStyle captionLarge = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle captionLarge = _base(
     fontSize: 12,
     fontWeight: FontWeight.w400,
     color: AppColors.secondaryText,
     height: 1.4,
   );
 
-  static const TextStyle captionSmall = TextStyle(
-    fontFamily: 'Poppins',
+  static TextStyle captionSmall = _base(
     fontSize: 10,
     fontWeight: FontWeight.w400,
     color: AppColors.secondaryText,
     height: 1.3,
+  );
+
+  // Numeric/medical value emphasis (vitals, dosage numbers, stats)
+  static TextStyle statValue = GoogleFonts.plusJakartaSans(
+    fontSize: 26,
+    fontWeight: FontWeight.w800,
+    color: AppColors.primaryText,
+    height: 1.1,
   );
 }

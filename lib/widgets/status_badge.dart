@@ -18,20 +18,24 @@ class StatusBadge extends StatelessWidget {
 
   factory StatusBadge.prescription(String status) {
     Color bgColor;
-    Color textColor = Colors.white;
+    Color textColor;
 
     switch (status.toLowerCase()) {
       case 'draft':
-        bgColor = Colors.grey[400]!;
+        bgColor = const Color(0xFFEEF2F1);
+        textColor = AppColors.secondaryText;
         break;
       case 'sent':
-        bgColor = AppColors.secondaryBlue;
+        bgColor = AppColors.accentLight;
+        textColor = const Color(0xFF0369A1);
         break;
       case 'completed':
-        bgColor = AppColors.success;
+        bgColor = AppColors.successLight;
+        textColor = const Color(0xFF15803D);
         break;
       default:
-        bgColor = AppColors.primaryBlue;
+        bgColor = AppColors.lightBlue;
+        textColor = AppColors.primaryBlue;
     }
 
     return StatusBadge(
@@ -46,16 +50,16 @@ class StatusBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.md,
-        vertical: AppSpacing.xs4,
+        vertical: AppSpacing.xs6,
       ),
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppColors.primaryBlue,
-        borderRadius: BorderRadius.circular(AppRadius.md),
+        color: backgroundColor ?? AppColors.lightBlue,
+        borderRadius: BorderRadius.circular(AppRadius.full),
       ),
       child: Text(
         status,
         style: AppTextStyles.labelSmall.copyWith(
-          color: textColor ?? Colors.white,
+          color: textColor ?? AppColors.primaryBlue,
         ),
       ),
     );

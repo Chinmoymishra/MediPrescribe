@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/theme/app_radius.dart';
 import '../../models/patient.dart';
 import '../../models/prescribed_medicine.dart';
 import '../../models/prescription.dart';
@@ -414,16 +415,17 @@ class _CreatePrescriptionScreenState extends ConsumerState<CreatePrescriptionScr
                 const SizedBox(height: AppSpacing.lg),
                 Text('Add Medicines', style: AppTextStyles.headlineSmall),
                 const SizedBox(height: AppSpacing.md),
-                TextField(
+                AppSearchField(
+                  hint: 'Search medicine by name...',
                   controller: _medicineSearchController,
                   onChanged: (value) {
                     ref.read(medicineSearchQueryProvider.notifier).state = value;
                     setState(() => _showMedicineSuggestions = value.isNotEmpty);
                   },
-                  decoration: const InputDecoration(
-                    hintText: 'Search medicine...',
-                    labelText: 'Search Medicine',
-                  ),
+                  onClear: () {
+                    ref.read(medicineSearchQueryProvider.notifier).state = '';
+                    setState(() => _showMedicineSuggestions = false);
+                  },
                 ),
                 const SizedBox(height: AppSpacing.md),
                 if (_showMedicineSuggestions)
@@ -634,8 +636,12 @@ class _CreatePrescriptionScreenState extends ConsumerState<CreatePrescriptionScr
                   itemBuilder: (context, index) {
                     final patient = patients[index];
                     return ListTile(
+                      leading: const Icon(Icons.person_outline_rounded, color: AppColors.primaryBlue),
                       title: Text(patient.name, style: AppTextStyles.bodyMedium),
-                      subtitle: Text('${patient.age} years • ${patient.gender.name} • ${patient.phone}'),
+                      subtitle: Text(
+                        '${patient.age} years • ${patient.gender.name} • ${patient.phone}',
+                        style: AppTextStyles.bodySmall,
+                      ),
                       onTap: () => _selectExistingPatient(patient),
                     );
                   },
@@ -705,17 +711,29 @@ class _CreatePrescriptionScreenState extends ConsumerState<CreatePrescriptionScr
           children: [
             Text('Gender', style: AppTextStyles.titleMedium),
             const SizedBox(height: 8),
-            DropdownButton<Gender>(
-              value: formState.newPatientGender,
-              isExpanded: true,
-              items: Gender.values.map((gender) {
-                return DropdownMenuItem<Gender>(value: gender, child: Text(gender.name));
-              }).toList(),
-              onChanged: (Gender? value) {
-                if (value != null) {
-                  ref.read(prescriptionFormProvider.notifier).setNewPatientGender(value);
-                }
-              },
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              decoration: BoxDecoration(
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(AppRadius.input),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<Gender>(
+                  value: formState.newPatientGender,
+                  isExpanded: true,
+                  icon: const Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.secondaryText),
+                  style: AppTextStyles.bodyMedium,
+                  items: Gender.values.map((gender) {
+                    return DropdownMenuItem<Gender>(value: gender, child: Text(gender.name));
+                  }).toList(),
+                  onChanged: (Gender? value) {
+                    if (value != null) {
+                      ref.read(prescriptionFormProvider.notifier).setNewPatientGender(value);
+                    }
+                  },
+                ),
+              ),
             ),
           ],
         ),
@@ -776,20 +794,33 @@ class _CreatePrescriptionScreenState extends ConsumerState<CreatePrescriptionScr
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 Text('Frequency', style: AppTextStyles.labelMedium),
-                DropdownButton<Frequency>(
-                  value: _selectedFrequency,
-                  isExpanded: true,
-                  items: Frequency.values.map((freq) {
-                    return DropdownMenuItem<Frequency>(
-                      value: freq,
-                      child: Text(freq.toString().split('.').last),
-                    );
-                  }).toList(),
-                  onChanged: (Frequency? newValue) {
-                    if (newValue != null) {
-                      setState(() => _selectedFrequency = newValue);
-                    }
-                  },
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(AppRadius.input),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<Frequency>(
+                      value: _selectedFrequency,
+                      isExpanded: true,
+                      icon: const Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.secondaryText),
+                      style: AppTextStyles.bodyMedium,
+                      items: Frequency.values.map((freq) {
+                        return DropdownMenuItem<Frequency>(
+                          value: freq,
+                          child: Text(freq.toString().split('.').last),
+                        );
+                      }).toList(),
+                      onChanged: (Frequency? newValue) {
+                        if (newValue != null) {
+                          setState(() => _selectedFrequency = newValue);
+                        }
+                      },
+                    ),
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 AppTextField(

@@ -7,6 +7,7 @@ import 'package:printing/printing.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../core/theme/app_radius.dart';
 import '../../models/prescription.dart';
 import '../../models/doctor.dart';
 import '../../providers/prescription_provider.dart';
@@ -89,15 +90,21 @@ class _PrescriptionPreviewScreenState extends ConsumerState<PrescriptionPreviewS
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Header with logo and title
-                Center(
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                  decoration: BoxDecoration(
+                    gradient: AppColors.heroGradient,
+                    borderRadius: BorderRadius.circular(AppRadius.xl),
+                  ),
                   child: Column(
                     children: [
                       Container(
                         width: 60,
                         height: 60,
                         decoration: BoxDecoration(
-                          color: AppColors.primaryBlue,
-                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.white.withValues(alpha: 0.16),
+                          borderRadius: BorderRadius.circular(16),
                         ),
                         child: Center(
                           child: Text(
@@ -108,30 +115,50 @@ class _PrescriptionPreviewScreenState extends ConsumerState<PrescriptionPreviewS
                           ),
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.md),
-                      Text('MediPrescribe', style: AppTextStyles.headlineLarge),
-                      Text('Digital Prescription', style: AppTextStyles.bodySmall),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        'MediPrescribe',
+                        style: AppTextStyles.headlineLarge.copyWith(color: Colors.white),
+                      ),
+                      Text(
+                        'Digital Prescription',
+                        style: AppTextStyles.bodySmall.copyWith(color: Colors.white.withValues(alpha: 0.85)),
+                      ),
                     ],
                   ),
                 ),
                 const SizedBox(height: AppSpacing.lg),
-                Divider(color: AppColors.divider),
-                const SizedBox(height: AppSpacing.lg),
 
                 // Doctor Information
-                Text('Doctor Information', style: AppTextStyles.headlineSmall),
+                _SectionHeader(icon: Icons.medical_services_outlined, title: 'Doctor Information'),
                 const SizedBox(height: AppSpacing.md),
                 Consumer(
                   builder: (context, ref, _) {
                     final doctorAsync = ref.watch(authProvider);
                     return doctorAsync.when(
                       data: (doctor) => AppCard(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
                           children: [
-                            Text(doctor?.name ?? 'Doctor', style: AppTextStyles.titleMedium),
-                            const SizedBox(height: AppSpacing.xs4),
-                            Text((doctor is Doctor ? doctor.specialization : null) ?? '', style: AppTextStyles.bodySmall),
+                            Container(
+                              width: 44,
+                              height: 44,
+                              decoration: BoxDecoration(
+                                color: AppColors.lightBlue,
+                                borderRadius: BorderRadius.circular(AppRadius.md),
+                              ),
+                              child: const Icon(Icons.person_outline_rounded, color: AppColors.primaryBlue),
+                            ),
+                            const SizedBox(width: AppSpacing.md),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(doctor?.name ?? 'Doctor', style: AppTextStyles.titleMedium),
+                                  const SizedBox(height: AppSpacing.xs4),
+                                  Text((doctor is Doctor ? doctor.specialization : null) ?? '', style: AppTextStyles.bodySmall),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -143,21 +170,40 @@ class _PrescriptionPreviewScreenState extends ConsumerState<PrescriptionPreviewS
                 const SizedBox(height: AppSpacing.lg),
 
                 // Patient Information
-                Text('Patient Information', style: AppTextStyles.headlineSmall),
+                _SectionHeader(icon: Icons.badge_outlined, title: 'Patient Information'),
                 const SizedBox(height: AppSpacing.md),
                 Consumer(
                   builder: (context, ref, _) {
                     final patientAsync = ref.watch(getPatientByIdProvider(prescription.patientId));
                     return patientAsync.when(
                       data: (patient) => AppCard(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
                           children: [
-                            Text(patient?.name ?? 'Patient', style: AppTextStyles.titleMedium),
-                            const SizedBox(height: AppSpacing.xs4),
-                            Text('Age: ${patient?.age ?? 0} | Gender: ${patient?.gender.name ?? ''}', style: AppTextStyles.bodySmall),
-                            const SizedBox(height: AppSpacing.xs4),
-                            Text('Phone: ${patient?.phone ?? ''}', style: AppTextStyles.bodySmall),
+                            Container(
+                              width: 44,
+                              height: 44,
+                              decoration: BoxDecoration(
+                                color: AppColors.accentLight,
+                                borderRadius: BorderRadius.circular(AppRadius.md),
+                              ),
+                              child: const Icon(Icons.person_outline_rounded, color: AppColors.primaryBlue),
+                            ),
+                            const SizedBox(width: AppSpacing.md),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(patient?.name ?? 'Patient', style: AppTextStyles.titleMedium),
+                                  const SizedBox(height: AppSpacing.xs4),
+                                  Text(
+                                    'Age: ${patient?.age ?? 0} | Gender: ${patient?.gender.name ?? ''}',
+                                    style: AppTextStyles.bodySmall,
+                                  ),
+                                  const SizedBox(height: AppSpacing.xs4),
+                                  Text('Phone: ${patient?.phone ?? ''}', style: AppTextStyles.bodySmall),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -169,24 +215,36 @@ class _PrescriptionPreviewScreenState extends ConsumerState<PrescriptionPreviewS
                 const SizedBox(height: AppSpacing.lg),
 
                 // Medical Details
-                Text('Medical Details', style: AppTextStyles.headlineSmall),
+                _SectionHeader(icon: Icons.assignment_outlined, title: 'Medical Details'),
                 const SizedBox(height: AppSpacing.md),
                 AppCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildDetailRow('Date', DateFormat('dd MMM yyyy').format(prescription.date)),
+                      _buildDetailRow(Icons.calendar_today_outlined, 'Date', DateFormat('dd MMM yyyy').format(prescription.date)),
                       const SizedBox(height: AppSpacing.md),
-                      _buildDetailRow('Diagnosis', prescription.diagnosis),
+                      Divider(color: AppColors.divider, height: 1),
                       const SizedBox(height: AppSpacing.md),
-                      _buildDetailRow('Symptoms', prescription.symptoms),
+                      _buildDetailRow(Icons.local_hospital_outlined, 'Diagnosis', prescription.diagnosis),
+                      const SizedBox(height: AppSpacing.md),
+                      Divider(color: AppColors.divider, height: 1),
+                      const SizedBox(height: AppSpacing.md),
+                      _buildDetailRow(Icons.monitor_heart_outlined, 'Symptoms', prescription.symptoms),
                       if (prescription.notes != null && prescription.notes!.isNotEmpty) ...[
                         const SizedBox(height: AppSpacing.md),
-                        _buildDetailRow('Notes', prescription.notes!),
+                        Divider(color: AppColors.divider, height: 1),
+                        const SizedBox(height: AppSpacing.md),
+                        _buildDetailRow(Icons.notes_outlined, 'Notes', prescription.notes!),
                       ],
                       if (prescription.followUpDate != null) ...[
                         const SizedBox(height: AppSpacing.md),
-                        _buildDetailRow('Follow-up Date', DateFormat('dd MMM yyyy').format(prescription.followUpDate!)),
+                        Divider(color: AppColors.divider, height: 1),
+                        const SizedBox(height: AppSpacing.md),
+                        _buildDetailRow(
+                          Icons.event_repeat_outlined,
+                          'Follow-up Date',
+                          DateFormat('dd MMM yyyy').format(prescription.followUpDate!),
+                        ),
                       ],
                     ],
                   ),
@@ -194,10 +252,18 @@ class _PrescriptionPreviewScreenState extends ConsumerState<PrescriptionPreviewS
                 const SizedBox(height: AppSpacing.lg),
 
                 // Medicines
-                Text('Medicines (${prescription.medicines.length})', style: AppTextStyles.headlineSmall),
+                _SectionHeader(
+                  icon: Icons.medication_outlined,
+                  title: 'Medicines (${prescription.medicines.length})',
+                ),
                 const SizedBox(height: AppSpacing.md),
-                ...prescription.medicines.map((medicine) => MedicineCard(prescribedMedicine: medicine)),
-                const SizedBox(height: AppSpacing.lg),
+                ...prescription.medicines.map(
+                  (medicine) => Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                    child: MedicineCard(prescribedMedicine: medicine),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.sm),
 
                 // Action Buttons
                 AppButton(
@@ -246,15 +312,37 @@ class _PrescriptionPreviewScreenState extends ConsumerState<PrescriptionPreviewS
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
+  Widget _buildDetailRow(IconData icon, String label, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppTextStyles.labelMedium),
-        const SizedBox(width: AppSpacing.md),
+        Icon(icon, size: 18, color: AppColors.secondaryText),
+        const SizedBox(width: AppSpacing.sm),
+        SizedBox(
+          width: 96,
+          child: Text(label, style: AppTextStyles.labelMedium),
+        ),
         Expanded(
           child: Text(value, style: AppTextStyles.bodyMedium),
         ),
+      ],
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final IconData icon;
+  final String title;
+
+  const _SectionHeader({required this.icon, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: AppColors.primaryBlue),
+        const SizedBox(width: AppSpacing.sm),
+        Text(title, style: AppTextStyles.headlineSmall),
       ],
     );
   }

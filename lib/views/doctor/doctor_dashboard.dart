@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../core/theme/app_spacing.dart';
+import '../../core/theme/app_radius.dart';
 import '../../models/user.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/patient_provider.dart';
@@ -16,6 +17,9 @@ import '../../widgets/app_card.dart';
 import '../../widgets/app_avatar.dart';
 import '../../widgets/app_button.dart';
 import '../../widgets/app_bottom_navigation.dart';
+import '../../widgets/app_empty_state.dart';
+import '../../widgets/patient_list_tile.dart';
+import '../../widgets/prescription_card.dart';
 
 class DoctorDashboard extends ConsumerStatefulWidget {
   const DoctorDashboard({Key? key}) : super(key: key);
@@ -35,6 +39,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      extendBody: true,
       body: authState.when(
         data: (user) {
           if (user == null) {
@@ -89,7 +94,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
 
   Widget _buildHomeTab(BuildContext context, dynamic user, AsyncValue patientsAsync, AsyncValue prescriptionsAsync) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 100),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -178,21 +183,29 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
       children: [
         Text('Quick Actions', style: AppTextStyles.headlineSmall),
         const SizedBox(height: AppSpacing.md),
-        Consumer(
-          builder: (context, ref, _) => AppButton(
-            text: 'Create Prescription',
-            width: double.infinity,
-            onPressed: () {
-              ref.read(prescriptionFormProvider.notifier).reset();
-              context.push('/prescription/create');
-            },
-          ),
-        ),
-        const SizedBox(height: AppSpacing.md),
-        AppButton(
-          text: 'Add Patient',
-          width: double.infinity,
-          onPressed: () => context.push('/doctor/add-patient'),
+        Row(
+          children: [
+            Expanded(
+              child: Consumer(
+                builder: (context, ref, _) => _QuickActionButton(
+                  icon: Icons.description_outlined,
+                  label: 'Create\nPrescription',
+                  onTap: () {
+                    ref.read(prescriptionFormProvider.notifier).reset();
+                    context.push('/prescription/create');
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.md),
+            Expanded(
+              child: _QuickActionButton(
+                icon: Icons.person_add_alt_outlined,
+                label: 'Add\nPatient',
+                onTap: () => context.push('/doctor/add-patient'),
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -200,7 +213,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
 
   Widget _buildPatientsTab(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 100),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -216,27 +229,24 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
             builder: (context, ref, child) {
               final patientsAsync = ref.watch(patientsProvider);
               return patientsAsync.when(
-                data: (patients) => ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: patients.length,
-                  itemBuilder: (context, index) {
-                    final patient = patients[index];
-                    return AppCard(
-                      margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                      padding: const EdgeInsets.all(AppSpacing.md),
-                      onTap: () => context.push('/doctor/patient/${patient.id}'),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(patient.name, style: AppTextStyles.titleMedium),
-                          const SizedBox(height: AppSpacing.xs4),
-                          Text('${patient.age} years • ${patient.gender.name}', style: AppTextStyles.bodySmall),
-                        ],
+                data: (patients) => patients.isEmpty
+                    ? AppEmptyState(
+                        icon: CupertinoIcons.person_2,
+                        title: 'No patients yet',
+                        description: 'Patients you add will appear here.',
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: patients.length,
+                        itemBuilder: (context, index) {
+                          final patient = patients[index];
+                          return PatientListTile(
+                            patient: patient,
+                            onTap: () => context.push('/doctor/patient/${patient.id}'),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
                 loading: () => const AppLoadingIndicator(size: 24),
                 error: (err, stack) => Text('Error: $err'),
               );
@@ -249,7 +259,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
 
   Widget _buildPrescriptionsTab(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 100),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -266,26 +276,16 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
                         itemCount: prescriptions.length,
                         itemBuilder: (context, index) {
                           final prescription = prescriptions[index];
-                          return AppCard(
-                            margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                            padding: const EdgeInsets.all(AppSpacing.md),
+                          return PrescriptionCard(
+                            prescription: prescription,
                             onTap: () => context.push('/prescription/${prescription.id}/preview'),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(prescription.diagnosis, style: AppTextStyles.titleMedium),
-                                const SizedBox(height: AppSpacing.xs4),
-                                Text('${prescription.medicines.length} medicines', style: AppTextStyles.bodySmall),
-                              ],
-                            ),
                           );
                         },
                       )
-                    : Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(AppSpacing.lg),
-                          child: Text('No prescriptions yet', style: AppTextStyles.bodyMedium),
-                        ),
+                    : AppEmptyState(
+                        icon: CupertinoIcons.doc_text,
+                        title: 'No prescriptions yet',
+                        description: 'Prescriptions you create will appear here.',
                       ),
                 loading: () => const AppLoadingIndicator(size: 24),
                 error: (err, stack) => Text('Error: $err'),
@@ -299,7 +299,7 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
 
   Widget _buildProfileTab(BuildContext context, dynamic user) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 100),
       child: Column(
         children: [
           AppAvatar(
@@ -320,6 +320,56 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _QuickActionButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _QuickActionButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.lg),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                gradient: AppColors.primaryGradient,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primaryBlue.withValues(alpha: 0.25),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Icon(icon, color: Colors.white, size: 26),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.labelMedium.copyWith(color: AppColors.primaryText),
+            ),
+          ],
+        ),
       ),
     );
   }

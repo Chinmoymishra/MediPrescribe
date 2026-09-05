@@ -14,12 +14,14 @@ class AppTheme {
       colorScheme: ColorScheme.light(
         primary: AppColors.primaryBlue,
         secondary: AppColors.secondaryBlue,
-        tertiary: AppColors.lightBlue,
-        surface: AppColors.background,
+        tertiary: AppColors.accent,
+        surface: AppColors.card,
         error: AppColors.error,
         outline: AppColors.border,
         outlineVariant: AppColors.divider,
       ),
+      splashColor: AppColors.primaryBlue.withValues(alpha: 0.08),
+      highlightColor: AppColors.primaryBlue.withValues(alpha: 0.04),
 
       // Scaffold background
       scaffoldBackgroundColor: AppColors.background,
@@ -76,6 +78,7 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryBlue,
           foregroundColor: Colors.white,
+          disabledBackgroundColor: AppColors.disabled,
           elevation: 0,
           padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.lg,

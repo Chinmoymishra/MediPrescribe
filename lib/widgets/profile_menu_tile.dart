@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import '../core/theme/app_colors.dart';
 import '../core/theme/app_text_styles.dart';
 import '../core/theme/app_spacing.dart';
+import '../core/theme/app_radius.dart';
 import 'app_card.dart';
 
 class ProfileMenuTile extends StatelessWidget {
@@ -29,10 +30,18 @@ class ProfileMenuTile extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
-          Icon(
-            icon,
-            color: iconColor ?? AppColors.primaryBlue,
-            size: 24,
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: (iconColor ?? AppColors.primaryBlue).withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(AppRadius.md),
+            ),
+            child: Icon(
+              icon,
+              color: iconColor ?? AppColors.primaryBlue,
+              size: 20,
+            ),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(

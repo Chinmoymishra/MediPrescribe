@@ -40,30 +40,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-  bool _validateForm() {
-    setState(() {
-      _emailError = null;
-      _passwordError = null;
-    });
-
-    bool isValid = true;
-
-    if (_emailController.text.isEmpty) {
-      setState(() => _emailError = 'Email is required');
-      isValid = false;
-    }
-
-    if (_passwordController.text.isEmpty) {
-      setState(() => _passwordError = 'Password is required');
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
   void _handleLogin() async {
-    if (!_validateForm()) return;
-
     final authNotifier = ref.read(authProvider.notifier);
     final userRole = widget.userRole ?? UserRole.patient;
 
@@ -119,6 +96,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: AppSpacing.md),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  decoration: BoxDecoration(
+                    color: AppColors.lightBlue,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    widget.userRole == UserRole.doctor
+                        ? 'Test login: rajesh.kumar@hospital.com / password123'
+                        : 'Test login: amit.singh@email.com / password123',
+                    style: AppTextStyles.bodySmall.copyWith(color: AppColors.primaryBlue),
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.lg),
                 AppTextField(
                   label: 'Email',
                   hint: 'Enter your email',

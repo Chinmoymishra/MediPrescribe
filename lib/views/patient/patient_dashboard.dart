@@ -8,9 +8,10 @@ import '../../core/theme/app_text_styles.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/prescription_provider.dart';
-import '../../widgets/app_card.dart';
 import '../../widgets/app_avatar.dart';
 import '../../widgets/app_bottom_navigation.dart';
+import '../../widgets/app_empty_state.dart';
+import '../../widgets/prescription_card.dart';
 
 class PatientDashboard extends ConsumerStatefulWidget {
   const PatientDashboard({Key? key}) : super(key: key);
@@ -28,6 +29,7 @@ class _PatientDashboardState extends ConsumerState<PatientDashboard> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      extendBody: true,
       body: authState.when(
         data: (user) {
           if (user == null) {
@@ -76,7 +78,7 @@ class _PatientDashboardState extends ConsumerState<PatientDashboard> {
 
   Widget _buildHomeTab(BuildContext context, dynamic user) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 100),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -119,26 +121,16 @@ class _PatientDashboardState extends ConsumerState<PatientDashboard> {
                         itemCount: prescriptions.length,
                         itemBuilder: (context, index) {
                           final prescription = prescriptions[index];
-                          return AppCard(
-                            margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                            padding: const EdgeInsets.all(AppSpacing.md),
+                          return PrescriptionCard(
+                            prescription: prescription,
                             onTap: () => context.push('/patient/prescription/${prescription.id}'),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(prescription.diagnosis, style: AppTextStyles.titleMedium),
-                                const SizedBox(height: AppSpacing.xs4),
-                                Text('${prescription.medicines.length} medicines', style: AppTextStyles.bodySmall),
-                              ],
-                            ),
                           );
                         },
                       )
-                    : Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(AppSpacing.lg),
-                          child: Text('No prescriptions yet', style: AppTextStyles.bodyMedium),
-                        ),
+                    : AppEmptyState(
+                        icon: CupertinoIcons.doc_text,
+                        title: 'No prescriptions yet',
+                        description: 'Prescriptions from your doctor will appear here.',
                       ),
                 loading: () => const AppLoadingIndicator(size: 24),
                 error: (err, stack) => Text('Error: $err'),
@@ -152,7 +144,7 @@ class _PatientDashboardState extends ConsumerState<PatientDashboard> {
 
   Widget _buildPrescriptionsTab(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 100),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -174,23 +166,16 @@ class _PatientDashboardState extends ConsumerState<PatientDashboard> {
                         itemCount: prescriptions.length,
                         itemBuilder: (context, index) {
                           final prescription = prescriptions[index];
-                          return AppCard(
-                            margin: const EdgeInsets.only(bottom: AppSpacing.md),
-                            padding: const EdgeInsets.all(AppSpacing.md),
+                          return PrescriptionCard(
+                            prescription: prescription,
                             onTap: () => context.push('/patient/prescription/${prescription.id}'),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(prescription.diagnosis, style: AppTextStyles.titleMedium),
-                                const SizedBox(height: AppSpacing.xs4),
-                                Text('${prescription.medicines.length} medicines', style: AppTextStyles.bodySmall),
-                              ],
-                            ),
                           );
                         },
                       )
-                    : Center(
-                        child: Text('No prescriptions yet'),
+                    : AppEmptyState(
+                        icon: CupertinoIcons.doc_text,
+                        title: 'No prescriptions yet',
+                        description: 'Prescriptions from your doctor will appear here.',
                       ),
                 loading: () => const AppLoadingIndicator(size: 24),
                 error: (err, stack) => Text('Error: $err'),
@@ -204,7 +189,7 @@ class _PatientDashboardState extends ConsumerState<PatientDashboard> {
 
   Widget _buildProfileTab(BuildContext context, dynamic user) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, 100),
       child: Column(
         children: [
           AppAvatar(

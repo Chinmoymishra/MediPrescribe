@@ -26,31 +26,59 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final content = isLoading
+        ? const SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            ),
+          )
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (icon != null) ...[
+                icon!,
+                const SizedBox(width: AppSpacing.sm),
+              ],
+              Flexible(
+                child: Text(
+                  text,
+                  style: AppTextStyles.titleMedium.copyWith(color: Colors.white),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          );
+
+    final enabled = isEnabled && !isLoading;
+
     return SizedBox(
       width: width,
       height: height ?? 48,
-      child: ElevatedButton(
-        onPressed: isEnabled && !isLoading ? onPressed : null,
-        child: isLoading
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
-            : Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (icon != null) ...[
-                    icon!,
-                    const SizedBox(width: AppSpacing.sm),
-                  ],
-                  Text(text),
-                ],
-              ),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: enabled ? AppColors.primaryGradient : null,
+          color: enabled ? null : AppColors.disabled,
+          borderRadius: BorderRadius.circular(AppRadius.button),
+        ),
+        child: ElevatedButton(
+          onPressed: enabled ? onPressed : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            disabledBackgroundColor: Colors.transparent,
+            foregroundColor: Colors.white,
+            disabledForegroundColor: Colors.white.withValues(alpha: 0.7),
+            shadowColor: Colors.transparent,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+          ),
+          child: content,
+        ),
       ),
     );
   }
