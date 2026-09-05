@@ -12,6 +12,7 @@ import '../../widgets/app_avatar.dart';
 import '../../widgets/app_bottom_navigation.dart';
 import '../../widgets/app_empty_state.dart';
 import '../../widgets/prescription_card.dart';
+import '../../widgets/app_dashboard_header.dart';
 
 class PatientDashboard extends ConsumerStatefulWidget {
   const PatientDashboard({Key? key}) : super(key: key);
@@ -82,6 +83,11 @@ class _PatientDashboardState extends ConsumerState<PatientDashboard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          AppDashboardHeader(
+            subtitle: 'Dashboard',
+            avatarInitials: user.name[0].toUpperCase(),
+          ),
+          const SizedBox(height: AppSpacing.lg),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

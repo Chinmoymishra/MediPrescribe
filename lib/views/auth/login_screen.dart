@@ -105,7 +105,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                   child: Text(
                     widget.userRole == UserRole.doctor
-                        ? 'Test login: rajesh.kumar@hospital.com / password123'
+                        ? 'Test login: chinmoy.mishra@hospital.com / password123'
                         : 'Test login: amit.singh@email.com / password123',
                     style: AppTextStyles.bodySmall.copyWith(color: AppColors.primaryBlue),
                   ),

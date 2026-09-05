@@ -20,6 +20,7 @@ import '../../widgets/app_bottom_navigation.dart';
 import '../../widgets/app_empty_state.dart';
 import '../../widgets/patient_list_tile.dart';
 import '../../widgets/prescription_card.dart';
+import '../../widgets/app_dashboard_header.dart';
 
 class DoctorDashboard extends ConsumerStatefulWidget {
   const DoctorDashboard({Key? key}) : super(key: key);
@@ -66,6 +67,11 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
         onTap: (index) {
           setState(() => _selectedIndex = index);
         },
+        onCenterActionTap: () {
+          ref.read(prescriptionFormProvider.notifier).reset();
+          context.push('/prescription/create');
+        },
+        centerActionIcon: CupertinoIcons.doc_text_fill,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.house),
@@ -98,6 +104,11 @@ class _DoctorDashboardState extends ConsumerState<DoctorDashboard> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          AppDashboardHeader(
+            subtitle: 'Dashboard',
+            avatarInitials: user.name[0].toUpperCase(),
+          ),
+          const SizedBox(height: AppSpacing.lg),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

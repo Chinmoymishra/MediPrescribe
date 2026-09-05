@@ -19,6 +19,14 @@ class MockDoctorService {
       registrationNumber: 'MR-001235',
       specialization: 'Cardiologist',
     ),
+    Doctor(
+      id: 'doctor_3',
+      name: 'Dr. Chinmoy Mishra',
+      email: 'chinmoy.mishra@hospital.com',
+      phone: '+91-9876543212',
+      registrationNumber: 'MR-001236',
+      specialization: 'General Medicine',
+    ),
   ];
 
   static Doctor? getDoctorById(String id) {

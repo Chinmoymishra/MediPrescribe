@@ -5,6 +5,7 @@ import '../core/theme/app_text_styles.dart';
 import '../core/theme/app_spacing.dart';
 import '../models/user.dart';
 import '../widgets/app_button.dart';
+import '../widgets/app_logo.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -22,22 +23,7 @@ class WelcomeScreen extends StatelessWidget {
               const SizedBox(height: AppSpacing.lg),
               Column(
                 children: [
-                  Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: AppColors.lightBlue,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Rx',
-                        style: AppTextStyles.displayLarge.copyWith(
-                          color: AppColors.primaryBlue,
-                        ),
-                      ),
-                    ),
-                  ),
+                  const AppLogo(size: 120),
                   const SizedBox(height: AppSpacing.lg),
                   Text(
                     'Welcome to MediPrescribe',
